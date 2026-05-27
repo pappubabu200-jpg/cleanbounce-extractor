@@ -7,33 +7,38 @@ import time
 # =====================================================
 # CONFIG
 # =====================================================
+# =====================================================
+# CONFIG
+# =====================================================
 
 st.set_page_config(
     page_title="CleanBounce AI",
-    page_icon="🚀",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-# HIDE STREAMLIT UI
-# ======================
+        page_icon="📧",
+            layout="wide",
+                initial_sidebar_state="collapsed"
+                )
 
-st.markdown("""
-<style>
+                # =====================================================
+                # HIDE STREAMLIT UI
+                # =====================================================
 
-#MainMenu {
-    visibility: hidden;
-}
+                st.markdown("""
+                <style>
 
-header {
-    visibility: hidden;
-}
+                #MainMenu {
+                    visibility: hidden;
+                    }
 
-footer {
-    visibility: hidden;
-}
+                    header {
+                        visibility: hidden;
+                        }
 
-</style>
-""", unsafe_allow_html=True)
+                        footer {
+                            visibility: hidden;
+                            }
+
+                            </style>
+                            """, unsafe_allow_html=True)
 # =====================================================
 # CUSTOM CSS
 # =====================================================
