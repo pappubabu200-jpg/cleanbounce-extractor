@@ -14,7 +14,26 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+# HIDE STREAMLIT UI
+# ======================
 
+st.markdown("""
+<style>
+
+#MainMenu {
+    visibility: hidden;
+}
+
+header {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+</style>
+""", unsafe_allow_html=True)
 # =====================================================
 # CUSTOM CSS
 # =====================================================
