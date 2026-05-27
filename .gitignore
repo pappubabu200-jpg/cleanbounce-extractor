@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Streamlit
+.streamlit/
+
+# Environment
+.env
+venv/
+env/
+ENV/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# Secrets
+secrets.toml
+config.toml
+
+# Data files
+*.csv
+*.xlsx
+*.xls
+
+# Uploads
+uploads/
+
+# Cache
+.cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build
+dist/
+build/
+
+# Temporary
+tmp/
+temp/
+
+# IDE
+.idea/
+
+# Testing
+.pytest_cache/
+
+# Local configs
+local_settings.py
+
+# API Keys
+apikeys.txt
+keys.json
+
+# Streamlit secrets
+.streamlit/secrets.toml
