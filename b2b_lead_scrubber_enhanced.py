@@ -89,33 +89,32 @@ div[data-testid="stFileUploader"] {
 # =====================================================
 # HEADER
 # =====================================================
-
-st.title("🚀 CleanBounce AI")
-
-st.caption(
-    "Smart B2B Lead Cleaning Engine with Validation & Bounce Risk"
-)
+# =====================================================
+# HEADER
+# =====================================================
 
 st.markdown("""
-<div style="
-padding:20px;
-border-radius:18px;
-background:linear-gradient(135deg,#0f172a,#111827);
-border:1px solid #1e293b;
-margin-bottom:20px;
-">
-
-<h3 style="margin:0;color:white;">
-⚡ AI-Powered Lead Intelligence
-</h3>
-
-<p style="color:#94a3b8;">
-Clean, validate and prioritize high-quality B2B leads instantly.
-Built for outbound sales teams, recruiters and agencies.
-</p>
-
-</div>
+<h1 style='
+font-size:52px;
+font-weight:800;
+margin-bottom:0;
+line-height:1;
+color:white;
+'>
+CleanBounce AI
+</h1>
 """, unsafe_allow_html=True)
+
+st.markdown("""
+<p style='
+font-size:18px;
+color:#94a3b8;
+margin-top:5px;
+'>
+Smart B2B Lead Cleaning Engine with Validation & Bounce Risk
+</p>
+""", unsafe_allow_html=True)
+
 
 # =====================================================
 # SIDEBAR
