@@ -619,38 +619,89 @@ if run:
 
         with tab1:
 
-            if clean_data:
+    if clean_data:
 
-                clean_df = pd.DataFrame(clean_data)
+        clean_df = pd.DataFrame(clean_data)
 
-                clean_df = clean_df.sort_values(
-                    by="quality_score",
-                    ascending=False
-                )
+        # =========================================
+        # SORT OPTIONS
+        # =========================================
 
-                st.dataframe(
-                    clean_df,
-                    use_container_width=True,
-                    height=550
-                )
+        sort_option = st.selectbox(
+            "📌 Sort Leads By",
+            [
+                "Highest Quality",
+                "Lowest Bounce Risk",
+                "Domain A-Z"
+            ]
+        )
 
-                csv = clean_df.to_csv(
-                    index=False
-                )
+        if sort_option == "Highest Quality":
 
-                st.download_button(
-                    "⬇ Download Clean Leads CSV",
-                    csv,
-                    "clean_leads.csv",
-                    "text/csv",
-                    use_container_width=True
-                )
+            clean_df = clean_df.sort_values(
+                by="quality_score",
+                ascending=False
+            )
 
-            else:
+        elif sort_option == "Lowest Bounce Risk":
 
-                st.warning(
-                    "No clean leads found."
-                )
+            clean_df = clean_df.sort_values(
+                by="bounce_risk",
+                ascending=True
+            )
+
+        elif sort_option == "Domain A-Z":
+
+            clean_df = clean_df.sort_values(
+                by="domain",
+                ascending=True
+            )
+
+        # =========================================
+        # DATAFRAME
+        # =========================================
+
+        st.dataframe(
+            clean_df,
+            use_container_width=True,
+            height=550
+        )
+
+        # =========================================
+        # COPY LEADS
+        # =========================================
+
+        clean_text = "\n".join(
+            clean_df["email"].tolist()
+        )
+
+        st.text_area(
+            "📋 Copy Clean Leads",
+            clean_text,
+            height=180
+        )
+
+        # =========================================
+        # DOWNLOAD CSV
+        # =========================================
+
+        csv = clean_df.to_csv(
+            index=False
+        )
+
+        st.download_button(
+            "⬇ Download Clean Leads CSV",
+            csv,
+            "clean_leads.csv",
+            "text/csv",
+            use_container_width=True
+        )
+
+    else:
+
+        st.warning(
+            "No clean leads found."
+        )
 
         # ================================================
         # BLOCKED
