@@ -1,0 +1,14 @@
+name: Deploy to Streamlit Cloud
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger Streamlit Cloud rebuild
+        run: |
+          echo "Pushed to main - Streamlit Cloud will auto-redeploy"
