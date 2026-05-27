@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 st.title("🇮🇳 B2B Lead Scrubber - India & Sales Edition")
-st.caption("Keeps Indian business domains + sales/marketing emails. Blocks consumer & junk only.")
+st.caption("Blocks consumer domains ending with junk providers. Keeps Indian business + Sales emails.")
 
 html_code = """
 <!DOCTYPE html>
@@ -32,10 +32,10 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .block-title { display: block; font-weight: 600; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
 textarea { width: 100%; height: 160px; padding: 14px; border: 1px solid var(--border); border-radius: 10px; font-family: 'Consolas', monospace; font-size: 13px; background: var(--bg); color: var(--text); box-sizing: border-box; resize: vertical; }
 textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-.grid-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.grid-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
 .filter-card { background: var(--bg); padding: 16px; border-radius: 10px; border: 1px solid var(--border); }
 .filter-card h4 { margin: 0 0 10px 0; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 6px; }
-.filter-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: var(--panel-bg); color: var(--text); }
+.filter-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: var(--panel-bg); color: var(--text); min-height: 80px; }
 .filter-hint { font-size: 11px; color: var(--muted); margin-top: 6px; display: block; }
 .action-bar { display: flex; gap: 12px; flex-wrap: wrap; margin: 24px 0; }
 .btn { padding: 12px 24px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; border: none; transition: all 0.2s; }
@@ -74,7 +74,7 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
 .tag-pill.sales { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
 .tag-pill.blocked { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
 .tag-pill.invalid { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
-.junk-preview { max-height: 120px; overflow-y: auto; background: var(--bg); border-radius: 8px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 12px; color: var(--danger); display: none; }
+.junk-preview { max-height: 150px; overflow-y: auto; background: var(--bg); border-radius: 8px; padding: 10px; margin-top: 12px; font-family: monospace; font-size: 12px; color: var(--danger); display: none; }
 .junk-preview.visible { display: block; }
 .junk-preview-item { padding: 2px 0; border-bottom: 1px solid rgba(239, 68, 68, 0.1); }
 .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
@@ -90,26 +90,77 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
             <label class="block-title">1. Raw Input String Data</label>
             <button class="clear-btn" onclick="clearInput()">Clear</button>
         </div>
-        <textarea id="inputText" placeholder="Paste text blocks containing emails...&#10;&#10;Example: sales@tcs.com, rajesh@flipkart.co.in, marketing@zoho.com, test@gmail.com"></textarea>
+        <textarea id="inputText" placeholder="Paste text blocks containing emails...&#10;&#10;Example: sales@tcs.com, rajesh@flipkart.co.in, webmaster@gmail.com, johndoe@yahoo.com"></textarea>
     </div>
 
     <div class="section-block">
         <label class="block-title">2. Lead Scrubbing Automation Matrix</label>
         <div class="grid-filters">
             <div class="filter-card">
-                <h4>🚫 Blocked Consumer Domains</h4>
-                <input type="text" id="blockedDomains" class="filter-input" value="gmail.com, yahoo.com, hotmail.com, outlook.com, aol.com, icloud.com, protonmail.com, mail.ru, yandex.com, gmx.com, live.com, msn.com, qq.com, 163.com">
-                <span class="filter-hint">Only consumer/free domains blocked. Business domains pass.</span>
+                <h4>🚫 Blocked Consumer Domains (Ends With)</h4>
+                <textarea id="blockedDomains" class="filter-input">yahoo.com
+ymail.com
+rocketmail.com
+aol.com
+outlook.com
+hotmail.com
+live.com
+msn.com
+icloud.com
+me.com
+mac.com
+comcast.net
+sbcglobal.net
+att.net
+bellsouth.net
+cox.net
+earthlink.net
+hotmail.co.uk
+hotmail.fr
+wanadoo.fr
+orange.fr
+gmail.com
+googlemail.com</textarea>
+                <span class="filter-hint">One per line. Blocks ANY domain ending with these (e.g. mail.yahoo.com matches yahoo.com)</span>
             </div>
             <div class="filter-card">
-                <h4>🛑 Blocked Usernames</h4>
-                <input type="text" id="startsWithFilters" class="filter-input" value="test, fake, temp, tempmail, trash, noreply, no-reply, first, last, jdoe, doe, flast, jane, john, admin, info, support">
-                <span class="filter-hint">SALES & MARKETING usernames are KEPT. Only junk prefixes blocked.</span>
+                <h4>🛑 Blocked Username Starts With</h4>
+                <textarea id="startsWithFilters" class="filter-input">webmaster
+johndoe
+jd
+janedoe
+janed
+j.doe
+doe
+firstname.lastname
+firstname
+dj
+John.Smith
+JohnDoe
+JohnS
+F.Last
+test
+fake
+temp
+tempmail
+trash
+noreply
+no-reply
+admin
+info
+support</textarea>
+                <span class="filter-hint">One per line. Reject emails where local part starts with these</span>
             </div>
             <div class="filter-card">
                 <h4>⚠️ Strings Containing</h4>
-                <input type="text" id="containsFilters" class="filter-input" value="xxxx, example, fakeemail, tempmail, trashmail, guerrillamail">
-                <span class="filter-hint">Reject emails containing fake/temp substrings</span>
+                <textarea id="containsFilters" class="filter-input">xxxx
+example
+fakeemail
+tempmail
+trashmail
+guerrillamail
+10minutemail</textarea>
+                <span class="filter-hint">One per line. Reject emails containing these substrings</span>
             </div>
         </div>
     </div>
@@ -135,11 +186,11 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
             <span id="totalCount" class="metric-value">0</span>
         </div>
         <div class="metric-card india">
-            <span class="metric-label">🇮🇳 Indian Business</span>
+            <span class="metric-label">Indian Business</span>
             <span id="indiaCount" class="metric-value">0</span>
         </div>
         <div class="metric-card sales">
-            <span class="metric-label">💼 Sales/Marketing</span>
+            <span class="metric-label">Sales/Marketing</span>
             <span id="salesCount" class="metric-value">0</span>
         </div>
         <div class="metric-card clean">
@@ -171,14 +222,6 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const FREE_PROVIDERS = [
-    'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com',
-    'icloud.com', 'me.com', 'mac.com', 'protonmail.com', 'proton.me',
-    'zoho.com', 'yandex.com', 'mail.ru', 'gmx.com', 'gmx.net',
-    'live.com', 'msn.com', 'qq.com', '163.com', '126.com',
-    'sina.com', 'sohu.com', 'foxmail.com', 'ymail.com', 'rocketmail.com'
-];
-
 const INDIAN_TLDS = ['.in', '.co.in', '.ac.in', '.edu.in', '.gov.in', '.nic.in', '.org.in', '.net.in', '.res.in', '.gen.in', '.firm.in', '.ind.in'];
 const SALES_PREFIXES = ['sales', 'marketing', 'bizdev', 'business', 'partnerships', 'affiliates', 'growth', 'revenue', 'commercial', 'bd', 'sdr', 'bdr', 'account', 'enterprise', 'channel', 'reseller', 'distributor'];
 
@@ -217,21 +260,25 @@ function isSalesEmail(username) {
     return SALES_PREFIXES.some(function(prefix) { return username === prefix || username.startsWith(prefix + '.'); });
 }
 
+function domainEndsWithBlocked(domain, blockedList) {
+    return blockedList.some(function(blocked) {
+        return domain === blocked || domain.endsWith('.' + blocked);
+    });
+}
+
 function getRejectionReason(email, username, domain, domainsToBlock, startsWithArr, containsArr) {
     if (!validateEmail(email)) {
         return { reason: 'invalid', tag: '<span class="tag-pill invalid">INVALID</span>' };
     }
-    var isDomainBlocked = domainsToBlock.some(function(d) {
-        return domain === d || domain.endsWith('.' + d);
-    });
+    var isDomainBlocked = domainEndsWithBlocked(domain, domainsToBlock);
     if (isDomainBlocked) {
-        return { reason: 'domain', tag: '<span class="tag-pill blocked">CONSUMER</span>' };
+        return { reason: 'domain', tag: '<span class="tag-pill blocked">CONSUMER-DOMAIN</span>' };
     }
     var matchesStart = startsWithArr.some(function(p) {
         return username.startsWith(p);
     });
     if (matchesStart) {
-        return { reason: 'start', tag: '<span class="tag-pill blocked">JUNK-PREFIX</span>' };
+        return { reason: 'start', tag: '<span class="tag-pill blocked">JUNK-USER</span>' };
     }
     var matchesContains = containsArr.some(function(c) {
         return email.indexOf(c) !== -1;
@@ -273,14 +320,14 @@ function runScrubbingPipeline() {
     var dupCount = normalized.length - uniqueEmails.length;
     
     var domainsToBlock = document.getElementById('blockedDomains').value
-        .split(',').map(function(s) { return s.trim().toLowerCase(); })
+        .split('\\n').map(function(s) { return s.trim().toLowerCase(); })
         .filter(function(s) { return !!s; });
     
     var startsWithArr = document.getElementById('startsWithFilters').value
-        .toLowerCase().split(',').map(function(s) { return s.trim(); })
+        .toLowerCase().split('\\n').map(function(s) { return s.trim(); })
         .filter(function(s) { return !!s; });
     var containsArr = document.getElementById('containsFilters').value
-        .toLowerCase().split(',').map(function(s) { return s.trim(); })
+        .toLowerCase().split('\\n').map(function(s) { return s.trim(); })
         .filter(function(s) { return !!s; });
     
     var cleanList = [];
@@ -299,9 +346,7 @@ function runScrubbingPipeline() {
         var username = email.substring(0, atIndex);
         var domain = email.substring(atIndex + 1);
         
-        // Check if Indian business domain
         var indian = isIndianDomain(domain);
-        // Check if sales/marketing email
         var sales = isSalesEmail(username);
         
         var rejection = getRejectionReason(email, username, domain, domainsToBlock, startsWithArr, containsArr);
@@ -320,7 +365,6 @@ function runScrubbingPipeline() {
         }
     }
     
-    // Sort all lists
     var sortFn = function(a, b) {
         if (a.domain !== b.domain) return a.domain.localeCompare(b.domain);
         return a.email.localeCompare(b.email);
@@ -329,7 +373,6 @@ function runScrubbingPipeline() {
     salesList.sort(sortFn);
     cleanList.sort(sortFn);
     
-    // Build output: Indian first, then Sales, then other B2B
     var allClean = [];
     for (var i1 = 0; i1 < indiaList.length; i1++) allClean.push(indiaList[i1].email);
     for (var i2 = 0; i2 < salesList.length; i2++) allClean.push(salesList[i2].email);
@@ -347,6 +390,22 @@ function runScrubbingPipeline() {
     document.getElementById('procTime').innerText = Math.round(performance.now() - startTime) + 'ms';
     
     document.getElementById('statsDetail').classList.add('visible');
+    
+    var junkPreview = document.getElementById('junkPreview');
+    if (junkList.length > 0) {
+        var previewHTML = '';
+        var showCount = Math.min(junkList.length, 50);
+        for (var n = 0; n < showCount; n++) {
+            previewHTML += '<div class="junk-preview-item">' + junkList[n].tag + ' ' + junkList[n].email + '</div>';
+        }
+        if (junkList.length > 50) {
+            previewHTML += '<div style="color:#94a3b8">... and ' + (junkList.length - 50) + ' more</div>';
+        }
+        junkPreview.innerHTML = previewHTML;
+        junkPreview.classList.add('visible');
+    } else {
+        junkPreview.classList.remove('visible');
+    }
     
     updateButtonStates();
     
@@ -474,7 +533,7 @@ document.addEventListener('keydown', function(e) {
 </html>
 """
 
-components.html(html_code, height=850, scrolling=True)
+components.html(html_code, height=900, scrolling=True)
 
 st.markdown("---")
-st.caption("🇮🇳 Indian domains (.in, .co.in, etc.) + 💼 Sales/Marketing emails are PRESERVED. Only consumer/junk blocked.")
+st.caption("🇮🇳 Indian domains + 💼 Sales/Marketing emails KEPT | 🚫 Consumer domains blocked by ENDSWITH | 🗑️ Junk usernames removed")
