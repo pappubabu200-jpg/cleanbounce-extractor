@@ -1,4 +1,4 @@
-# 📧 B2B Lead Scrubber & Extractor Pipeline
+i# 📧 B2B Lead Scrubber & Extractor Pipeline
 
 A secure, browser-side B2B email lead cleaning tool built with **Streamlit 1.35.0**. All processing happens client-side inside a sandboxed HTML component — your raw lead data never touches an external server or database.
 
@@ -151,3 +151,20 @@ MIT License — free for personal and commercial use.
 
 
 Usage Guide
+
+# CleanBounce AI
+
+AI-powered B2B Lead Cleaning Engine.
+
+Features:
+- Email extraction
+- Bounce risk scoring
+- Disposable email detection
+- Domain intelligence
+- India-first lead scoring
+- CSV export
+
+Built with:
+- Streamlit
+- Python
+- Pandas
