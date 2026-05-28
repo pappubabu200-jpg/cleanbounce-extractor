@@ -15,6 +15,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+<<<<<<< HEAD
 # =====================================================
 # HIDE STREAMLIT UI
 # =====================================================
@@ -37,6 +38,20 @@ footer {
 </style>
 """, unsafe_allow_html=True)
 
+=======
+                # =====================================================
+                # HIDE STREAMLIT UI
+                # ==================================================
+                # Hide Streamlit UI
+                st.markdown("""
+                <style>
+                #MainMenu {visibility: hidden;}
+                header {visibility: hidden;}
+                footer {visibility: hidden;}
+                </style>
+                """, unsafe_allow_html=True)
+
+>>>>>>> 52dbdf3 (Final CleanBounce AI upgrade)
 # =====================================================
 # CUSTOM CSS
 # =====================================================
