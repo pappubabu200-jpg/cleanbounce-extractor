@@ -15,7 +15,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-<<<<<<< HEAD
 # =====================================================
 # HIDE STREAMLIT UI
 # =====================================================
@@ -38,20 +37,6 @@ footer {
 </style>
 """, unsafe_allow_html=True)
 
-=======
-                # =====================================================
-                # HIDE STREAMLIT UI
-                # ==================================================
-                # Hide Streamlit UI
-                st.markdown("""
-                <style>
-                #MainMenu {visibility: hidden;}
-                header {visibility: hidden;}
-                footer {visibility: hidden;}
-                </style>
-                """, unsafe_allow_html=True)
-
->>>>>>> 52dbdf3 (Final CleanBounce AI upgrade)
 # =====================================================
 # CUSTOM CSS
 # =====================================================
@@ -264,44 +249,6 @@ TEST_PLACEHOLDERS = {
 }
 
 # =====================================================
-# TEST EMAIL DETECTION FUNCTION
-# =====================================================
-
-def is_test_email(email):
-
-    local = email.split('@')[0].lower().strip()
-
-    # Remove dots, dashes, underscores, numbers
-    local_clean = re.sub(
-        r'[^a-z]',
-        '',
-        local
-    )
-
-    # Direct match
-    if local_clean in TEST_PLACEHOLDERS:
-        return True
-
-    # Suspicious patterns
-    suspicious_patterns = [
-        'janefirst',
-        'janedoe',
-        'janelast',
-        'test',
-        'sample',
-        'fake',
-        'dummy'
-    ]
-
-    for pattern in suspicious_patterns:
-
-        if pattern in local_clean:
-            return True
-
-    return False
-
-
-# =====================================================
 # FUNCTIONS
 # =====================================================
 
@@ -315,8 +262,24 @@ def is_test_email(email):
         local
     )
 
-    for placeholder in TEST_PLACEHOLDERS:
+    if local_clean in TEST_PLACEHOLDERS:
+        return True
 
+    suspicious_patterns = [
+        'janefirst',
+        'janedoe',
+        'janelast',
+        'test',
+        'sample',
+        'fake',
+        'dummy'
+    ]
+
+    for pattern in suspicious_patterns:
+        if pattern in local_clean:
+            return True
+
+    for placeholder in TEST_PLACEHOLDERS:
         if (
             placeholder in local
             or local_clean in [
@@ -741,105 +704,87 @@ if run:
             "🏢 Domain Analysis"
         ])
 
-     with tab1:
+        with tab1:
 
-    if clean_data:
+            if clean_data:
 
-        clean_df = pd.DataFrame(clean_data)
+                clean_df = pd.DataFrame(clean_data)
 
-        # =========================
-        # SORT OPTIONS
-        # =========================
+                sort_option = st.selectbox(
+                    "📌 Sort Leads By",
+                    [
+                        "Highest Quality",
+                        "Lowest Bounce Risk",
+                        "Alphabetical A-Z",
+                        "Domain A-Z"
+                    ]
+                )
 
-        sort_option = st.selectbox(
-            "📌 Sort Leads By",
-            [
-                "Highest Quality",
-                "Lowest Bounce Risk",
-                "Alphabetical A-Z",
-                "Domain A-Z"
-            ]
-        )
+                if sort_option == "Highest Quality":
 
-        if sort_option == "Highest Quality":
+                    clean_df = clean_df.sort_values(
+                        by="quality_score",
+                        ascending=False
+                    )
 
-            clean_df = clean_df.sort_values(
-                by="quality_score",
-                ascending=False
-            )
+                elif sort_option == "Lowest Bounce Risk":
 
-        elif sort_option == "Lowest Bounce Risk":
+                    clean_df = clean_df.sort_values(
+                        by="bounce_risk",
+                        ascending=True
+                    )
 
-            clean_df = clean_df.sort_values(
-                by="bounce_risk",
-                ascending=True
-            )
+                elif sort_option == "Alphabetical A-Z":
 
-        elif sort_option == "Alphabetical A-Z":
+                    clean_df = clean_df.sort_values(
+                        by="email",
+                        ascending=True
+                    )
 
-            clean_df = clean_df.sort_values(
-                by="email",
-                ascending=True
-            )
+                elif sort_option == "Domain A-Z":
 
-        elif sort_option == "Domain A-Z":
+                    clean_df = clean_df.sort_values(
+                        by="domain",
+                        ascending=True
+                    )
 
-            clean_df = clean_df.sort_values(
-                by="domain",
-                ascending=True
-            )
+                st.dataframe(
+                    clean_df,
+                    use_container_width=True,
+                    height=550
+                )
 
-        # =========================
-        # TABLE
-        # =========================
+                st.markdown("### 📋 Copy Clean Leads")
 
-        st.dataframe(
-            clean_df,
-            use_container_width=True,
-            height=550
-        )
+                clean_text = "\n".join(
+                    clean_df["email"].tolist()
+                )
 
-        # =========================
-        # COPY LEADS
-        # =========================
+                st.text_area(
+                    "Copy Emails",
+                    clean_text,
+                    height=180
+                )
 
-        st.markdown("### 📋 Copy Clean Leads")
+                csv = clean_df.to_csv(
+                    index=False
+                )
 
-        clean_text = "\n".join(
-            clean_df["email"].tolist()
-        )
+                st.download_button(
+                    "⬇ Download Clean Leads CSV",
+                    csv,
+                    "clean_leads.csv",
+                    "text/csv",
+                    use_container_width=True
+                )
 
-        st.text_area(
-            "Copy Emails",
-            clean_text,
-            height=180
-        )
+            else:
 
-        # =========================
-        # DOWNLOAD
-        # =========================
+                st.warning(
+                    "No clean leads found."
+                )
 
-        csv = clean_df.to_csv(
-            index=False
-        )
-
-        st.download_button(
-            "⬇ Download Clean Leads CSV",
-            csv,
-            "clean_leads.csv",
-            "text/csv",
-            use_container_width=True
-        )
-
-    else:
-
-        st.warning(
-            "No clean leads found."
-        )
-                
-
-
- with tab2:
+        with tab2:
 
             if blocked_data:
 
@@ -943,4 +888,4 @@ else:
 
 st.caption(
     "🚀 CleanBounce AI • Email Validation + Bounce Risk Scoring"
-            )
+)
