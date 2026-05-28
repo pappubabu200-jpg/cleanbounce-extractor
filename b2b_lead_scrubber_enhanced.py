@@ -7,38 +7,36 @@ import time
 # =====================================================
 # CONFIG
 # =====================================================
-# =====================================================
-# CONFIG
-# =====================================================
 
 st.set_page_config(
     page_title="CleanBounce AI",
-        page_icon="📧",
-            layout="wide",
-                initial_sidebar_state="collapsed"
-                )
+    page_icon="📧",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-                # =====================================================
-                # HIDE STREAMLIT UI
-                # =====================================================
+# =====================================================
+# HIDE STREAMLIT UI
+# =====================================================
 
-                st.markdown("""
-                <style>
+st.markdown("""
+<style>
 
-                #MainMenu {
-                    visibility: hidden;
-                    }
+#MainMenu {
+    visibility: hidden;
+}
 
-                    header {
-                        visibility: hidden;
-                        }
+header {
+    visibility: hidden;
+}
 
-                        footer {
-                            visibility: hidden;
-                            }
+footer {
+    visibility: hidden;
+}
 
-                            </style>
-                            """, unsafe_allow_html=True)
+</style>
+""", unsafe_allow_html=True)
+
 # =====================================================
 # CUSTOM CSS
 # =====================================================
@@ -94,9 +92,6 @@ div[data-testid="stFileUploader"] {
 # =====================================================
 # HEADER
 # =====================================================
-# =====================================================
-# HEADER
-# =====================================================
 
 st.markdown("""
 <h1 style='
@@ -119,7 +114,6 @@ margin-top:5px;
 Smart B2B Lead Cleaning Engine with Validation & Bounce Risk
 </p>
 """, unsafe_allow_html=True)
-
 
 # =====================================================
 # SIDEBAR
@@ -167,6 +161,7 @@ st.sidebar.markdown("""
 ✅ India Domain Prioritization  
 ✅ CSV Export  
 ✅ Duplicate Removal  
+✅ Domain Analytics  
 """)
 
 # =====================================================
@@ -188,8 +183,139 @@ DISPOSABLE_DOMAINS = {
 }
 
 # =====================================================
+# TEST / PLACEHOLDER EMAIL FILTER
+# =====================================================
+
+TEST_PLACEHOLDERS = {
+
+    # Generic
+    'test',
+    'testing',
+    'sample',
+    'demo',
+    'temp',
+    'temporary',
+    'fake',
+    'spam',
+    'dummy',
+    'user',
+    'admin',
+
+    # Jane First Variations
+    'jane',
+    'first',
+    'janefirst',
+    'jfirst',
+    'jafirst',
+    'janef',
+    'jf',
+    'jmf',
+    'janemfirst',
+    'firstjane',
+    'firstj',
+    'thejanefirst',
+    'iamjanefirst',
+    'janefirst1',
+
+    # Jane Doe Variations
+    'doe',
+    'janedoe',
+    'jdoe',
+    'jadoe',
+    'janed',
+    'jd',
+    'jmd',
+    'janemdoe',
+    'doejane',
+    'doej',
+    'thejanedoe',
+    'iamjanedoe',
+    'janedoe1',
+
+    # Jane Last Variations
+    'last',
+    'janelast',
+    'jlast',
+    'jalast',
+    'janel',
+    'jl',
+    'jml',
+    'janemlast',
+    'lastjane',
+    'lastj',
+    'thejanelast',
+    'iamjanelast',
+    'janelast1'
+}
+
+# =====================================================
+# TEST EMAIL DETECTION FUNCTION
+# =====================================================
+
+def is_test_email(email):
+
+    local = email.split('@')[0].lower().strip()
+
+    # Remove dots, dashes, underscores, numbers
+    local_clean = re.sub(
+        r'[^a-z]',
+        '',
+        local
+    )
+
+    # Direct match
+    if local_clean in TEST_PLACEHOLDERS:
+        return True
+
+    # Suspicious patterns
+    suspicious_patterns = [
+        'janefirst',
+        'janedoe',
+        'janelast',
+        'test',
+        'sample',
+        'fake',
+        'dummy'
+    ]
+
+    for pattern in suspicious_patterns:
+
+        if pattern in local_clean:
+            return True
+
+    return False
+
+
+# =====================================================
 # FUNCTIONS
 # =====================================================
+
+def is_test_email(email):
+
+    local = email.split('@')[0].lower().strip()
+
+    local_clean = re.sub(
+        r'[^a-z]',
+        '',
+        local
+    )
+
+    for placeholder in TEST_PLACEHOLDERS:
+
+        if (
+            placeholder in local
+            or local_clean in [
+                'jane',
+                'doe',
+                'john',
+                'first',
+                'last'
+            ]
+        ):
+            return True
+
+    return False
+
 
 def is_valid_email(email):
 
@@ -221,12 +347,8 @@ def calculate_bounce_risk(email):
 
     risk = 15
 
-    # Disposable domains
-
     if domain in DISPOSABLE_DOMAINS:
         risk += 70
-
-    # Free providers
 
     free_providers = {
         'gmail.com',
@@ -241,8 +363,6 @@ def calculate_bounce_risk(email):
 
     if domain in free_providers:
         risk += 25
-
-    # Role-based emails
 
     role_keywords = [
         'info',
@@ -261,17 +381,11 @@ def calculate_bounce_risk(email):
     ):
         risk += 20
 
-    # Short usernames
-
     if len(local_part) <= 3:
         risk += 15
 
-    # Long usernames
-
     if len(local_part) > 30:
         risk += 10
-
-    # India bonus
 
     if domain.endswith('.in'):
         risk = max(10, risk - 18)
@@ -316,7 +430,7 @@ def clean_leads(emails):
 
     gmail_domains = {'gmail.com'}
 
-    other_personal_domains = {
+    personal_domains = {
         'yahoo.com',
         'hotmail.com',
         'outlook.com',
@@ -346,11 +460,17 @@ def clean_leads(emails):
 
             continue
 
-        domain = email.split('@')[1]
+        if is_test_email(email):
 
-        # ==========================
-        # GMAIL LOGIC
-        # ==========================
+            blocked.append({
+                "email": email,
+                "reason": "Test/Placeholder Email",
+                "risk": 90
+            })
+
+            continue
+
+        domain = email.split('@')[1]
 
         if (
             domain in gmail_domains
@@ -365,12 +485,8 @@ def clean_leads(emails):
 
             continue
 
-        # ==========================
-        # OTHER PERSONAL DOMAINS
-        # ==========================
-
         if (
-            domain in other_personal_domains
+            domain in personal_domains
             and not allow_personal
         ):
 
@@ -382,15 +498,9 @@ def clean_leads(emails):
 
             continue
 
-        # ==========================
-        # BOUNCE RISK
-        # ==========================
-
         bounce_risk = calculate_bounce_risk(email)
 
         quality = 100 - bounce_risk
-
-        # India boost
 
         if (
             india_first
@@ -400,8 +510,6 @@ def clean_leads(emails):
             )
         ):
             quality += 12
-
-        # Final filtering
 
         if (
             quality >= min_quality
@@ -450,7 +558,7 @@ raw_text = st.text_area(
 )
 
 # =====================================================
-# PROCESSING PIPELINE
+# PIPELINE
 # =====================================================
 
 st.markdown("""
@@ -479,6 +587,8 @@ run = st.button(
 
 if run:
 
+    start_time = time.time()
+
     with st.spinner(
         "Validating emails & calculating bounce risk..."
     ):
@@ -488,12 +598,6 @@ if run:
         for i in range(100):
             time.sleep(0.01)
             progress.progress(i + 1)
-
-        start_time = time.time()
-
-        # ================================================
-        # EMAIL EXTRACTION
-        # ================================================
 
         if uploaded_file:
 
@@ -517,8 +621,6 @@ if run:
                 df = pd.DataFrame({
                     'email': raw_emails
                 })
-
-            # Auto email column detect
 
             if 'email' not in df.columns:
 
@@ -547,28 +649,22 @@ if run:
 
             raw_emails = extract_emails(raw_text)
 
-        # ================================================
-        # CLEANING
-        # ================================================
+        raw_emails = list(set(raw_emails))
 
         clean_data, blocked_data, domain_count = (
             clean_leads(raw_emails)
         )
 
-        # ================================================
-        # METRICS
-        # ================================================
+        process_time = round(
+            time.time() - start_time,
+            2
+        )
 
         total = len(raw_emails)
 
         clean_count = len(clean_data)
 
         blocked_count = len(blocked_data)
-
-        process_time = round(
-            time.time() - start_time,
-            2
-        )
 
         st.markdown("## 📊 Analytics")
 
@@ -594,6 +690,27 @@ if run:
             f"{process_time}s"
         )
 
+        low_risk = len([
+            x for x in clean_data
+            if x["bounce_risk"] <= 25
+        ])
+
+        medium_risk = len([
+            x for x in clean_data
+            if 25 < x["bounce_risk"] <= 50
+        ])
+
+        high_risk = len([
+            x for x in clean_data
+            if x["bounce_risk"] > 50
+        ])
+
+        c1, c2, c3 = st.columns(3)
+
+        c1.success(f"🟢 Low Risk: {low_risk}")
+        c2.warning(f"🟡 Medium Risk: {medium_risk}")
+        c3.error(f"🔴 High Risk: {high_risk}")
+
         india_leads = len([
             x for x in clean_data
             if x["domain"].endswith(".in")
@@ -603,109 +720,89 @@ if run:
             f"🇮🇳 India-focused leads found: {india_leads}"
         )
 
-        # ================================================
-        # TABS
-        # ================================================
-
         tab1, tab2, tab3 = st.tabs([
             "✅ Clean Leads",
             "🚫 Blocked Emails",
             "🏢 Domain Analysis"
         ])
 
-        # ================================================
-        # CLEAN LEADS
-        # ================================================
-
         with tab1:
 
-    if clean_data:
+            if clean_data:
 
-        clean_df = pd.DataFrame(clean_data)
+                clean_df = pd.DataFrame(clean_data)
 
-        # =========================================
-        # SORT OPTIONS
-        # =========================================
+                sort_option = st.selectbox(
+                    "📌 Sort Leads By",
+                    [
+                        "Highest Quality",
+                        "Lowest Bounce Risk",
+                        "Alphabetical (A-Z)",
+                        "Domain A-Z"
+                    ]
+                )
 
-        sort_option = st.selectbox(
-            "📌 Sort Leads By",
-            [
-                "Highest Quality",
-                "Lowest Bounce Risk",
-                "Domain A-Z"
-            ]
-        )
+                if sort_option == "Highest Quality":
 
-        if sort_option == "Highest Quality":
+                    clean_df = clean_df.sort_values(
+                        by="quality_score",
+                        ascending=False
+                    )
 
-            clean_df = clean_df.sort_values(
-                by="quality_score",
-                ascending=False
-            )
+                elif sort_option == "Lowest Bounce Risk":
 
-        elif sort_option == "Lowest Bounce Risk":
+                    clean_df = clean_df.sort_values(
+                        by="bounce_risk",
+                        ascending=True
+                    )
 
-            clean_df = clean_df.sort_values(
-                by="bounce_risk",
-                ascending=True
-            )
+                elif sort_option == "Alphabetical (A-Z)":
 
-        elif sort_option == "Domain A-Z":
+                    clean_df = clean_df.sort_values(
+                        by="email",
+                        ascending=True
+                    )
 
-            clean_df = clean_df.sort_values(
-                by="domain",
-                ascending=True
-            )
+                else:
 
-        # =========================================
-        # DATAFRAME
-        # =========================================
+                    clean_df = clean_df.sort_values(
+                        by="domain",
+                        ascending=True
+                    )
 
-        st.dataframe(
-            clean_df,
-            use_container_width=True,
-            height=550
-        )
+                st.dataframe(
+                    clean_df,
+                    use_container_width=True,
+                    height=550
+                )
 
-        # =========================================
-        # COPY LEADS
-        # =========================================
+                clean_text = "\n".join(
+                    clean_df["email"].tolist()
+                )
 
-        clean_text = "\n".join(
-            clean_df["email"].tolist()
-        )
+                st.text_area(
+                    "📋 Copy Clean Leads",
+                    clean_text,
+                    height=180
+                )
 
-        st.text_area(
-            "📋 Copy Clean Leads",
-            clean_text,
-            height=180
-        )
+                csv = clean_df.to_csv(
+                    index=False
+                )
 
-        # =========================================
-        # DOWNLOAD CSV
-        # =========================================
+                st.download_button(
+                    "⬇ Download Clean Leads CSV",
+                    csv,
+                    "clean_leads.csv",
+                    "text/csv",
+                    use_container_width=True
+                )
 
-        csv = clean_df.to_csv(
-            index=False
-        )
+            else:
 
-        st.download_button(
-            "⬇ Download Clean Leads CSV",
-            csv,
-            "clean_leads.csv",
-            "text/csv",
-            use_container_width=True
-        )
-
-    else:
-
-        st.warning(
-            "No clean leads found."
-        )
-
-        # ================================================
-        # BLOCKED
-        # ================================================
+                st.warning(
+                    "No clean leads found."
+                )
 
         with tab2:
 
@@ -725,10 +822,6 @@ if run:
                 st.success(
                     "All emails passed validation!"
                 )
-
-        # ================================================
-        # DOMAIN ANALYSIS
-        # ================================================
 
         with tab3:
 
@@ -751,35 +844,6 @@ if run:
                     use_container_width=True
                 )
 
-                st.markdown(
-                    "### 🔥 Most Active Companies"
-                )
-
-                top3 = top_df.head(3)
-
-                for _, row in top3.iterrows():
-
-                    st.markdown(f"""
-                    <div style="
-                    padding:14px;
-                    border-radius:14px;
-                    background:#0f172a;
-                    margin-bottom:10px;
-                    border:1px solid #1e293b;
-                    ">
-
-                    🏢 <b>{row['Domain']}</b>
-                    <br>
-
-                    📧 {row['Count']} leads found
-
-                    </div>
-                    """, unsafe_allow_html=True)
-
-        # ================================================
-        # AI SUMMARY
-        # ================================================
-
         avg_quality = round(
             sum(
                 x["quality_score"]
@@ -795,11 +859,6 @@ if run:
             ) / max(len(clean_data), 1),
             1
         )
-
-        low_risk = len([
-            x for x in clean_data
-            if x["bounce_risk"] < 25
-        ])
 
         st.markdown(f"""
         <div style="
@@ -819,8 +878,8 @@ if run:
         <li>Average Bounce Risk:
         <b>{avg_risk}%</b></li>
 
-        <li>Low Risk Leads:
-        <b>{low_risk}</b></li>
+        <li>Clean Leads:
+        <b>{clean_count}</b></li>
 
         <li>India Domains:
         <b>{india_leads}</b></li>
@@ -849,4 +908,4 @@ else:
 
 st.caption(
     "🚀 CleanBounce AI • Email Validation + Bounce Risk Scoring"
-)
+            )
