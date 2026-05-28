@@ -4,7 +4,7 @@ st.set_page_config(
     page_title="CleanBounce AI",
     page_icon="📧",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 pg = st.navigation(
@@ -23,7 +23,7 @@ pg = st.navigation(
             url_path="fake-email-generator"
         ),
     ],
-    position="hidden"
+    position="sidebar"
 )
 
 pg.run()

@@ -94,6 +94,40 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================
+# TOP NAV BAR
+# =====================================================
+
+st.markdown("""
+<style>
+div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
+    background: transparent !important;
+    border: 1px solid #1e293b !important;
+    color: #94a3b8 !important;
+    border-radius: 10px !important;
+    font-size: 13px !important;
+    padding: 6px 10px !important;
+}
+div[data-testid="stHorizontalBlock"] button[kind="secondary"]:hover {
+    border-color: #6366f1 !important;
+    color: #e2e8f0 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+nav1, nav2, nav3, nav_spacer = st.columns([1.4, 1.4, 1.8, 4])
+with nav1:
+    if st.button("📧 Lead Scrubber", use_container_width=True):
+        st.switch_page("home.py")
+with nav2:
+    if st.button("🔗 URL Opener", use_container_width=True):
+        st.switch_page("tools/bulk_url_opener.py")
+with nav3:
+    if st.button("✉️ Email Generator", use_container_width=True):
+        st.switch_page("tools/fake_email_generator.py")
+
+st.markdown("<hr style='border-color:#1e293b;margin:8px 0 16px 0;'>", unsafe_allow_html=True)
+
+# =====================================================
 # HEADER
 # =====================================================
 
@@ -105,6 +139,40 @@ CleanBounce AI
 Smart B2B Lead Cleaning Engine with Validation &amp; Bounce Risk
 </p>
 """, unsafe_allow_html=True)
+
+# =====================================================
+# TOOL CARDS (above the fold)
+# =====================================================
+
+col_a, col_b = st.columns(2)
+
+with col_a:
+    st.markdown("""
+    <div class="tool-card">
+        <div class="tool-card-icon">🔗</div>
+        <div class="tool-card-title">Bulk URL Opener</div>
+        <div class="tool-card-desc">Paste hundreds of URLs and open them all in one click. Deduplication, auto-https, batch mode, TXT export.</div>
+        <span class="tool-card-badge">Free</span>
+        <span class="tool-card-badge">No Login</span>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Open Bulk URL Opener →", key="top_goto_url_opener", use_container_width=True):
+        st.switch_page("tools/bulk_url_opener.py")
+
+with col_b:
+    st.markdown("""
+    <div class="tool-card">
+        <div class="tool-card-icon">✉️</div>
+        <div class="tool-card-title">Fake Email Generator</div>
+        <div class="tool-card-desc">Generate realistic test emails in bulk. Multiple formats, custom domains, CSV/JSON export, seed control.</div>
+        <span class="tool-card-badge">Free</span>
+        <span class="tool-card-badge">No Login</span>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Open Email Generator →", key="top_goto_email_gen", use_container_width=True):
+        st.switch_page("tools/fake_email_generator.py")
+
+st.markdown("<hr style='border-color:#1e293b;margin:16px 0;'>", unsafe_allow_html=True)
 
 # =====================================================
 # SIDEBAR

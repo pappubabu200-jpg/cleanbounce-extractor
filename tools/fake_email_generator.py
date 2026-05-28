@@ -130,8 +130,22 @@ FORMAT_OPTIONS = {
 # HEADER
 # =====================================================
 
-if st.button("← Back to Home", key="back_home"):
-    st.switch_page("home.py")
+# =====================================================
+# TOP NAV BAR
+# =====================================================
+
+nav1, nav2, nav3, nav_spacer = st.columns([1.4, 1.4, 1.8, 4])
+with nav1:
+    if st.button("📧 Lead Scrubber", use_container_width=True):
+        st.switch_page("home.py")
+with nav2:
+    if st.button("🔗 URL Opener", use_container_width=True):
+        st.switch_page("tools/bulk_url_opener.py")
+with nav3:
+    if st.button("✉️ Email Generator", use_container_width=True):
+        st.switch_page("tools/fake_email_generator.py")
+
+st.markdown("<hr style='border-color:#1e293b;margin:8px 0 16px 0;'>", unsafe_allow_html=True)
 
 st.markdown("""
 <h1 style='font-size:42px;font-weight:800;margin-bottom:0;line-height:1.1;color:white;'>
